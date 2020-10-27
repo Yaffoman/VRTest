@@ -31,11 +31,14 @@
     <canvas id="renderCanvas" touch-action="none"></canvas> <!-- touch-action="none" for best results from PEP -->
 
     <script>
-        var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-        var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+        var canvas = document.getElementById("renderCanvas");
 
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
         /******* Add the create scene function ******/
-       var createScene = function () {
+       var createScene = async function () {
     // This creates a basic Babylon Scene object (non-mesh)
     var scene = new BABYLON.Scene(engine);
 
@@ -63,20 +66,35 @@
     // Our built-in 'ground' shape.
     var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
 
+    scene.createDefaultEnvironment();
+
+    const xrHelper = await scene.createDefaultXRExperienceAsync();
+
     return scene;
 };
         /******* End of the create scene function ******/
 
-        var scene = createScene(); //Call the createScene function
+        var engine;
+        try {
+            engine = createDefaultEngine();
+        } catch(e) {
+            console.log("the available createEngine function failed. Creating the default engine instead");
+            engine = createDefaultEngine();
+        }
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+        scene.then(returnedScene => { sceneToRender = returnedScene; });
 
-        // Register a render loop to repeatedly render the scene
+
         engine.runRenderLoop(function () {
-                scene.render();
+            if (sceneToRender && sceneToRender.activeCamera) {
+                sceneToRender.render();
+            }
         });
 
-        // Watch for browser/canvas resize events
+        // Resize
         window.addEventListener("resize", function () {
-                engine.resize();
+            engine.resize();
         });
     </script>
 

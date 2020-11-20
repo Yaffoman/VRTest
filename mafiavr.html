@@ -58,14 +58,14 @@
         var engine = null;
         var scene = null;
         var sceneToRender = null;
-        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { stencil: true }); };
         /******* Add the create scene function ******/
         var createScene = async function () {
             // This creates a basic Babylon Scene object (non-mesh)
             var scene = new BABYLON.Scene(engine);
 
             // This creates and positions a free camera (non-mesh)
-            var camera = new BABYLON.FlyCamera("camera1", new BABYLON.Vector3(10, 2.5, -4), scene);
+            var camera = new BABYLON.FlyCamera("camera1", new BABYLON.Vector3(10, 2.8, -4.8), scene);
 
             // This targets the camera to scene origin
             camera.setTarget(new BABYLON.Vector3(10,2,3));
@@ -123,16 +123,16 @@
             BABYLON.SceneLoader.ImportMesh("", "./scenes/", "player_rigged.obj", scene, function (newMeshes, particleSystems, skeletons) {
                 var buddy1 = newMeshes[0];
                 buddy1.name = "buddy"
-                buddy1.scaling = new BABYLON.Vector3(.2,.2,.2);
+                buddy1.scaling = new BABYLON.Vector3(.22,.22,.22);
                 var x_vals = [11.6,10,8.5,7,11.6,8.5,7]
                 var y_vals = -.6
-                var z_vals = [-3.1,-3.1,-3.1,-3.1,3.1,3.1,3.1]
+                var z_vals = [-4.7,-4.7,-4.7,-4.7,2.6,2.6,2.6]
                 defaultBuddyColor = buddy1.diffuseColor
                 console.log(defaultBuddyColor)
                 // Buddy 1 location and shadows
                 buddy1.position.x = 10;
                 buddy1.position.y = -.6;
-                buddy1.position.z = 1.15;
+                buddy1.position.z = 2.6;
 
                 buddy1.rotate(new BABYLON.Vector3(0,1,0), Math.PI)
                 buddy1.receiveShadows = true;
@@ -144,34 +144,37 @@
                     newBuddy.position.x = x_vals[i];
                     newBuddy.position.y = y_vals;
                     newBuddy.position.z = z_vals[i];
+                    newBuddy.renderOutline = false;
+                    newBuddy.outlineWidth = .1;
+                    newBuddy.outlineColor = new BABYLON.Color4(1, 0.2, 0.3, 1.0);
                     newBuddy.material = new BABYLON.StandardMaterial()
                     if(i < 4)
                         newBuddy.rotate(new BABYLON.Vector3(0,1,0), Math.PI);
 
                 }
-                var frameRate = 10
+                // var frameRate = 10
 
-                var xSlide = new BABYLON.Animation("xSlide", "position.x", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-                var keyFrames = []; 
+                // var xSlide = new BABYLON.Animation("xSlide", "position.x", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                // var keyFrames = []; 
 
-                keyFrames.push({
-                    frame: 0,
-                    value: 2
-                });
+                // keyFrames.push({
+                //     frame: 0,
+                //     value: 2
+                // });
 
-                keyFrames.push({
-                    frame: frameRate,
-                    value: -2
-                });
+                // keyFrames.push({
+                //     frame: frameRate,
+                //     value: -2
+                // });
 
-                keyFrames.push({
-                    frame: 2 * frameRate,
-                    value: 2
-                });
+                // keyFrames.push({
+                //     frame: 2 * frameRate,
+                //     value: 2
+                // });
 
-                xSlide.setKeys(keyFrames);
+                // xSlide.setKeys(keyFrames);
 
-                scene.beginDirectAnimation(buddy1, [xSlide], 0, 2 * frameRate, true);
+                // scene.beginDirectAnimation(buddy1, [xSlide], 0, 2 * frameRate, true);
 
             });
 
@@ -219,7 +222,6 @@
 
 
             var selectedMesh
-            var hl = new BABYLON.HighlightLayer("hl1", scene);
 
             scene.onPointerObservable.add((pointerInfo) => {      		
                 switch (pointerInfo.type) {
@@ -230,12 +232,10 @@
                             selected = pointerInfo.pickInfo.pickedMesh;
 
                             if(selected.name.includes('buddy'))
-                                selected.material.diffuseColor = new BABYLON.Color3.Green();
+                                selected.renderOutline = true
                             if(selectedMesh != null && selected != selectedMesh){
-                                selectedMesh.material.diffuseColor = new BABYLON.Color3.White();
-                                // h1.addMesh(selected, BABYLON.Color3.Red())
+                                selectedMesh.renderOutline = false
                             }
-                                // h1.addMesh(selected, BABYLON.Color3.Red())
                             selectedMesh = selected
                         }
                         break;

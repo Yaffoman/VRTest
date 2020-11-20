@@ -250,6 +250,8 @@
             //const xrHelper = await scene.createDefaultXRExperienceAsync();
             var vrHelper = scene.createDefaultVRExperience({createDeviceOrientationCamera:false});
             vrHelper.enableInteractions();
+            vrHelper.touch = true
+            vrHelper.displayLaserPointer = true
             // vrHelper.enableTeleportation({floorMeshes: [enviroment.ground]});
             return scene;
         };

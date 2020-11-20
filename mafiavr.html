@@ -29,7 +29,7 @@
 
     </head>
 
-   <body>
+   <body touch-action="none">
 
     <canvas id="renderCanvas" touch-action="none"></canvas> <!-- touch-action="none" for best results from PEP -->
 
@@ -220,6 +220,7 @@
 
             var selectedMesh
             var hl = new BABYLON.HighlightLayer("hl1", scene);
+
             scene.onPointerObservable.add((pointerInfo) => {      		
                 switch (pointerInfo.type) {
                     case BABYLON.PointerEventTypes.POINTERDOWN:
@@ -230,9 +231,10 @@
 
                             if(selected.name.includes('buddy'))
                                 selected.material.diffuseColor = new BABYLON.Color3.Green();
-                            if(selectedMesh != null && selected != selectedMesh)
+                            if(selectedMesh != null && selected != selectedMesh){
                                 selectedMesh.material.diffuseColor = new BABYLON.Color3.White();
-                            
+                                h1.addMesh(selected, BABYLON.Color3.Red())
+                            }
                                 // h1.addMesh(selected, BABYLON.Color3.Red())
                             selectedMesh = selected
                         }

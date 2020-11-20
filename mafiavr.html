@@ -233,7 +233,7 @@
                                 selected.material.diffuseColor = new BABYLON.Color3.Green();
                             if(selectedMesh != null && selected != selectedMesh){
                                 selectedMesh.material.diffuseColor = new BABYLON.Color3.White();
-                                h1.addMesh(selected, BABYLON.Color3.Red())
+                                // h1.addMesh(selected, BABYLON.Color3.Red())
                             }
                                 // h1.addMesh(selected, BABYLON.Color3.Red())
                             selectedMesh = selected
@@ -241,6 +241,15 @@
                         break;
                 }
             });
+
+            document.addEventListener("touchstart", touchHandler);
+
+            function touchHandler(e) {
+                if(e.touches) {
+                    console.log("touched!")
+                   
+                }
+}
                     
             // Move the light with the camera
             scene.registerBeforeRender(function () {
@@ -248,10 +257,12 @@
             });
             // This is the magic line that allows XR, without it the split screen doesn't work
             //const xrHelper = await scene.createDefaultXRExperienceAsync();
-            var vrHelper = scene.createDefaultVRExperience({createDeviceOrientationCamera:false});
+            var vrHelper = scene.createDefaultVRExperience({createDeviceOrientationCamera:true});
             vrHelper.enableInteractions();
             vrHelper.touch = true
             vrHelper.displayLaserPointer = true
+            vrHelper.deviceOrientationCamera.disablePointerInputWhenUsingDeviceOrientation = false;
+
             // vrHelper.enableTeleportation({floorMeshes: [enviroment.ground]});
             return scene;
         };
